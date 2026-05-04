@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import time
 
-from src.infeng.config import EngineConfig
-from src.infeng.engine import InferenceEngine
-from src.infeng.sampler import SamplingParams
+from infeng.config import EngineConfig
+from infeng.engine import InferenceEngine
+from infeng.sampler import SamplingParams
 
 
 def main() -> None:
