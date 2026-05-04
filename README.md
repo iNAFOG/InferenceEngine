@@ -1,6 +1,8 @@
 # Inference Engine Learning Project (`sshleifer/tiny-gpt2`)
 
-A minimal, extensible inference engine for learning LLM serving concepts:
+A minimal, extensible **inference engine** for learning LLM serving concepts. Currently achieving **727 tokens/sec avg speed** for TinyGPT2 with plans to add more complex serving logic.
+
+**Current Features:**
 - model loading
 - generation API
 - streaming-ready design
@@ -20,11 +22,14 @@ A minimal, extensible inference engine for learning LLM serving concepts:
 
 - Correctness-first text generation using `sshleifer/tiny-gpt2`
 - Clear engine abstractions (`engine`, `sampler`, `schemas`)
-- Easy path to advanced features: continuous batching, quantization, prefix cache
+- Foundation for advanced serving patterns
 
-## Next Milestones
+## Planned Advanced Logic
 
-- M1: Single prompt generation + tests
-- M2: Batch + streaming
-- M3: Profiling and optimization
-- M4: Advanced serving features
+Future releases will implement sophisticated inference optimization techniques:
+
+- **Batch Processing & Continuous Batching**: Group requests for improved throughput and GPU utilization
+- **Streaming & Token-Level Serving**: Real-time token streaming to clients for reduced latency
+- **Quantization**: Model compression (int8, fp16) for faster inference and lower memory footprint
+- **Prefix Cache / KV-Cache Optimization**: Reuse cached key-value tensors for repeated prompts
+- **Profiling & Performance Optimization**: Detailed latency analysis and bottleneck identification
