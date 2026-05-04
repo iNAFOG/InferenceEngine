@@ -1,6 +1,6 @@
-from src.infeng.config import EngineConfig
-from src.infeng.engine import InferenceEngine
-from src.infeng.sampler import SamplingParams
+from infeng.config import EngineConfig
+from infeng.engine import InferenceEngine
+from infeng.sampler import SamplingParams
 
 
 def test_engine_smoke_generation() -> None:
