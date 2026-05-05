@@ -10,3 +10,18 @@ def test_engine_smoke_generation() -> None:
     assert isinstance(output["text"], str)
     assert output["prompt_tokens"] > 0
     assert output["total_tokens"] >= output["prompt_tokens"]
+
+
+def test_deterministic_generation():
+    engine = InferenceEngine()
+    params = SamplingParams(
+        max_new_tokens=16,
+        temperature=1.0,
+        do_sample=True,
+        seed=42
+    )
+
+    output1 = engine.generate("Hello World", params)
+    output2 = engine.generate("Hello World", params)
+
+    assert output1["text"] == output2["text"], "Fixed seed should produce identical output"
