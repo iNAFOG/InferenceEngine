@@ -23,7 +23,16 @@ class InferenceEngine:
         if device == "auto":
             return "cuda" if torch.cuda.is_available() else "cpu"
         return device
-
+    
+    @staticmethod
+    def validate_sampling_params(params: SamplingParams) -> None:
+        if params.temperature <= 0:
+            raise ValueError("temperature must be > 0")
+        if not params.do_sample and params.temperature != 1.0:
+            raise ValueError("temperature must be 1.0 when do_sample=False (greedy)")
+        if params.top_k < 0 or params.top_k > 200:
+            raise ValueError("top_k must be in [0, 200]")
+        
     def generate(self, prompt: str, params: SamplingParams) -> dict:
         """Generate text given a prompt.
         
