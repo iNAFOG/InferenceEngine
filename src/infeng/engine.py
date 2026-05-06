@@ -34,11 +34,12 @@ class InferenceEngine:
             raise ValueError("top_k must be in [0, 200]")
         
     def generate(self, prompt: str, params: SamplingParams) -> dict:
+        
         """Generate text given a prompt.
         
         Args:
             prompt: Input text to extend.
-            params: Sampling parameters (temperature, tok_k, seed, etc.).
+            params: Sampling parameters (temperature, top_k, seed, etc.).
             
             Returns:
                 dict with keys:
@@ -46,10 +47,11 @@ class InferenceEngine:
                 - prompt_tokens: Number of tokens in input.
                 - generated_tokens: Number of new generated tokens.
                 - total_tokens: Total tokens in output.
-                - models: Model name used.
+                - model: Model name used.
                 - latency_ms: Wall-clock generation time.
             """
-        
+        self.validate_sampling_params(params)
+
         if params.seed is not None:
             torch.manual_seed(params.seed)
             if torch.cuda.is_available():
