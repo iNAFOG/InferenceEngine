@@ -26,12 +26,16 @@ class InferenceEngine:
     
     @staticmethod
     def validate_sampling_params(params: SamplingParams) -> None:
+        if params.max_new_tokens < 1:
+            raise ValueError("max_new_tokens must be >= 1")
         if params.temperature <= 0:
             raise ValueError("temperature must be > 0")
+        if not (0.0 < params.top_p <= 1.0):
+            raise ValueError("top_p must be in (0, 1]")
         if not params.do_sample and params.temperature != 1.0:
             raise ValueError("temperature must be 1.0 when do_sample=False (greedy)")
-        if params.top_k < 0 or params.top_k > 200:
-            raise ValueError("top_k must be in [0, 200]")
+        if params.top_k < 0:
+            raise ValueError("top_k must be >= 0")
         
     def generate(self, prompt: str, params: SamplingParams) -> dict:
         

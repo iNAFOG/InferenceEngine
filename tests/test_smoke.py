@@ -13,7 +13,7 @@ def test_engine_smoke_generation() -> None:
 
 
 def test_deterministic_generation():
-    engine = InferenceEngine()
+    engine = InferenceEngine(EngineConfig(model_name="sshleifer/tiny-gpt2", device="cpu"))
     params = SamplingParams(
         max_new_tokens=16,
         temperature=1.0,
