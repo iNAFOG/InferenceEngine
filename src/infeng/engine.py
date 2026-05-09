@@ -36,7 +36,12 @@ class InferenceEngine:
             raise ValueError("temperature must be 1.0 when do_sample=False (greedy)")
         if params.top_k < 0:
             raise ValueError("top_k must be >= 0")
-        
+        if not params.do_sample and params.top_k != 0:
+            raise ValueError("top_k must be 0 when do_sampling = False")
+        if not params.do_sample and params.top_p != 1.0:
+            raise ValueError("top_p must be 1 when do_sampling = False")
+
+
     def generate(self, prompt: str, params: SamplingParams) -> dict:
         
         """Generate text given a prompt.

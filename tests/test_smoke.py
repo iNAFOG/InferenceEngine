@@ -25,3 +25,25 @@ def test_deterministic_generation():
     output2 = engine.generate("Hello World", params)
 
     assert output1["text"] == output2["text"], "Fixed seed should produce identical output"
+
+def test_greedy_ignores_seed():
+    engine = InferenceEngine(EngineConfig(model_name="sshleifer/tiny-gpt2",device="cpu"))
+    params_a = SamplingParams(
+        max_new_tokens = 8,
+        do_sample = False,
+        seed = 67
+    )
+    params_b = SamplingParams(
+        max_new_tokens = 8,
+        do_sample = False,
+        seed = 420
+    )
+
+    output_a = engine.generate("Hello", params_a)
+    output_b = engine.generate("Hello", params_b)
+    assert output_a["text"] == output_b["text"]
+
+def test_invalid_sampling_params_raise():
+    engine = InferenceEngine(EngineConfig(model_name="sshleifer/tiny-gpt2", device="cpu"))
+    with pytest.raises(ValueError):
+        engine.generate("Hello", SamplingParams(max_new_tokens=0))
