@@ -1,7 +1,7 @@
 from infeng.config import EngineConfig
 from infeng.engine import InferenceEngine
 from infeng.sampler import SamplingParams
-
+import pytest
 
 def test_engine_smoke_generation() -> None:
     engine = InferenceEngine(EngineConfig(model_name="sshleifer/tiny-gpt2", device="cpu"))
