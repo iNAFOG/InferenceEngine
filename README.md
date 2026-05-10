@@ -12,11 +12,15 @@ A minimal, extensible **inference engine** for learning LLM serving concepts. Cu
 
 1. Create a virtual environment and activate it.
 2. Install dependencies:
+   - `pip intall --upgrade pip`
    - `pip install -r requirements.txt`
+   - `pip install -e .`
 3. Run API:
    - `uvicorn src.infeng.api:app --reload`
 4. Open docs:
    - `http://127.0.0.1:8000/docs`
+5. For testing using Pytest:
+   - `pytest -s tests/test_smoke.py`
 
 ## Project Goals
 
