@@ -12,7 +12,7 @@ A minimal, extensible **inference engine** for learning LLM serving concepts. Cu
 
 1. Create a virtual environment and activate it.
 2. Install dependencies:
-   - `pip intall --upgrade pip`
+   - `pip install --upgrade pip`
    - `pip install -r requirements.txt`
    - `pip install -e .`
 3. Run API:

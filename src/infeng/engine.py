@@ -91,3 +91,28 @@ class InferenceEngine:
             "model": self.config.model_name,
             "latency_ms": round(latency_ms, 2),
         }
+    
+    def generate_batch(self, prompts: list[str], params:SamplingParams) -> list[dict]:
+        self.validate_sampling_params(params)
+
+        if params.seed is not None:
+            torch.manual_seed(params.seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(params.seed)
+
+        inputs = self.tokenizer(
+            prompts,
+            return_tensors='pt',
+            padding=True
+        ).to(self.device)
+
+        with torch.inference_mode():
+            output_ids = self.model.generate(
+                **inputs,
+                max_new_tokens=params.max_new_tokens,
+                do_sample=params.do_sample,
+                temperature=params.temperature,
+                top_k=params.top_k,
+                top_p=params.top_p,
+                pad_tokens=self.tokenizer.eos_tokens_id,
+            )
