@@ -5,7 +5,7 @@ import pytest
 
 def test_engine_smoke_generation() -> None:
     engine = InferenceEngine(EngineConfig(model_name="sshleifer/tiny-gpt2", device="cpu"))
-    output = engine.generate("Hello", SamplingParams(max_new_tokens=8, do_sample=False))
+    output = engine.generate("Hello", SamplingParams(max_new_tokens=8, top_k=0, do_sample=False))
 
     assert isinstance(output["text"], str)
     assert output["prompt_tokens"] > 0
@@ -31,11 +31,13 @@ def test_greedy_ignores_seed():
     params_a = SamplingParams(
         max_new_tokens = 8,
         do_sample = False,
+        top_k=0,
         seed = 67
     )
     params_b = SamplingParams(
         max_new_tokens = 8,
         do_sample = False,
+        top_k=0,
         seed = 420
     )
 
