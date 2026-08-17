@@ -72,7 +72,7 @@ class InferenceEngine:
             if torch.cuda.is_available():
                 torch.cuda.manual_seed_all(params.seed)
 
-        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
+        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device) ##pt -> pytorch tensors
         start = time.perf_counter()
         with torch.inference_mode():
             output_ids = self.model.generate(
@@ -153,33 +153,53 @@ class InferenceEngine:
     def stream_generate(self, prompt: str, params: SamplingParams):
         self.validate_sampling_params(params)
 
-        inputs = self.tokenizer(
-            prompt,
-            return_tensors = "pt"
-        ).to(self.device)
+        if params.seed is not None:
+            torch.manual_seed(params.seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed(params.seed)
 
-        streamer = TextIteratorStreamer(
-            self.tokenizer,
-            skip_special_tokens = True
-        )
 
-        generation_kwargs = dict(
-            **inputs,
-            max_new_tokens = params.max_new_tokens,
-            do_sample = params.do_sample,
-            temperature = params.temperature,
-            top_k = params.top_k,
-            top_p = params.top_p,
-            pad_token_id = self.tokenizer.eos_token_id,
-            streamer = streamer,
-        )
+        inputs = self.tokenizer(prompt, return_tensors = "pt").to(self.device)
 
-        thread = threading.Thread(
-            target = self.model.generate,
-            kwargs = generation_kwargs
-        )
+        prompt_tokens = int(inputs["input_ids"].shape[1])
 
+        streamer = TextIteratorStreamer(self.tokenizer, skip_special_tokens=True)
+
+        #The worker thread can't "return" anything. so it writes here instead.
+        holder: dict = {}
+
+        def run_generation() -> None:
+            with torch.inference_mode():
+                output_ids = self.model.generate(
+                    **inputs,
+                    max_new_tokens = params.max_new_tokens,
+                    do_sample = params.do_sample,
+                    temperature = params.temperature,
+                    top_k = params.top_k,
+                    top_p = params.top_p,
+                    pad_token_id = self.tokenizer.eos_token_id,
+                    streamer = streamer,
+                )
+            holder["output_ids"] = output_ids
+
+
+        thread = threading.Thread(target = run_generation)
         thread.start()
 
-        for text in streamer:
-            yield text
+        start = time.perf_counter()
+        for chunk in streamer:
+            yield {"type": "token", "text": chunk}
+                   
+        thread.join() #loop ended but making sure worked stored it's result
+        latency_ms = (time.perf_counter() - start) * 1000
+
+        output_ids = holder["output_ids"][0] #shape (1,total_len) -> (total_len,)
+        
+        yield {
+            "type" : "done",
+            "prompt_tokens" : prompt_tokens,
+            "generated_tokens" : int(output_ids.shape[0] - prompt_tokens),
+            "total_tokens" : int(output_ids.shape[0]),
+            "models" : self.config.model_name,
+            "latency_ms" : round(latency_ms,2),
+        }
