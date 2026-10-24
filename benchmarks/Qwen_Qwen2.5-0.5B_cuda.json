@@ -1,0 +1,65 @@
+{
+  "model": "Qwen/Qwen2.5-0.5B",
+  "device": "cuda",
+  "hardware": "NVIDIA GeForce GTX 1650",
+  "dtype": [
+    {
+      "dtype": "float32",
+      "weights_mb": 1894,
+      "peak_mb": 1901,
+      "tokens_per_sec": 30.8,
+      "p50_latency_ms": 8410.2,
+      "p95_latency_ms": 8467.7,
+      "ttft_ms": 34.4,
+      "generated_tokens": 256
+    },
+    {
+      "dtype": "float16",
+      "weights_mb": 958,
+      "peak_mb": 962,
+      "tokens_per_sec": 22.4,
+      "p50_latency_ms": 11354.4,
+      "p95_latency_ms": 11668.0,
+      "ttft_ms": 57.4,
+      "generated_tokens": 256
+    }
+  ],
+  "max_new_tokens": 256,
+  "kv_cache": {
+    "on": {
+      "tokens_per_sec": 33.4,
+      "p50_latency_ms": 7648.7,
+      "p95_latency_ms": 7729.5,
+      "ttft_ms": 31.4,
+      "generated_tokens": 256
+    },
+    "off": {
+      "tokens_per_sec": 13.5,
+      "p50_latency_ms": 18946.0,
+      "p95_latency_ms": 18951.5,
+      "ttft_ms": 29.8,
+      "generated_tokens": 256
+    },
+    "speedup": 2.47
+  },
+  "batching": [
+    {
+      "batch_size": 1,
+      "sequential_tokens_per_sec": 33.0,
+      "batched_tokens_per_sec": 32.9,
+      "speedup": 1.0
+    },
+    {
+      "batch_size": 4,
+      "sequential_tokens_per_sec": 31.4,
+      "batched_tokens_per_sec": 107.1,
+      "speedup": 3.41
+    },
+    {
+      "batch_size": 8,
+      "sequential_tokens_per_sec": 31.1,
+      "batched_tokens_per_sec": 176.4,
+      "speedup": 5.67
+    }
+  ]
+}

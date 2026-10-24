@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "infeng"
-version = "0.1.0"
-description = "Learning inference engine for tiny-gpt2"
+version = "0.2.0"
+description = "Small LLM inference engine with KV cache, batching and streaming"
 readme = "README.md"
 requires-python = ">=3.10"
 
